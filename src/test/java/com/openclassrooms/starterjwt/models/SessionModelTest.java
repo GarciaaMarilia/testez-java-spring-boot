@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Date;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -107,7 +106,6 @@ class SessionModelTest {
                 .description("desc")
                 .build();
 
-        // equals() and hashCode() based only on id
         assertThat(s1).isEqualTo(s2);
         assertThat(s1.hashCode()).isEqualTo(s2.hashCode());
 
@@ -130,4 +128,47 @@ class SessionModelTest {
         assertThat(str).contains("name=SessionName");
         assertThat(str).contains("description=Session description");
     }
+
+    @Test
+    void testToStringAllFieldsCovered() {
+        Date date = new Date();
+        Teacher teacher = new Teacher().setId(1L).setFirstName("Ada").setLastName("Lovelace");
+        User user = new User().setId(2L).setEmail("ada@example.com").setFirstName("Ada").setLastName("Lovelace").setPassword("pwd").setAdmin(true);
+        LocalDateTime created = LocalDateTime.now().minusDays(1);
+        LocalDateTime updated = LocalDateTime.now();
+
+        Session session = Session.builder()
+                .id(100L)
+                .name("Complete Session")
+                .date(date)
+                .description("Full session")
+                .teacher(teacher)
+                .users(Arrays.asList(user))
+                .createdAt(created)
+                .updatedAt(updated)
+                .build();
+
+        String str = session.toString();
+
+        assertThat(str).contains("id=100");
+        assertThat(str).contains("name=Complete Session");
+        assertThat(str).contains("description=Full session");
+        assertThat(str).contains("teacher=Teacher");
+        assertThat(str).contains("users=[User");
+        assertThat(str).contains("createdAt=");
+        assertThat(str).contains("updatedAt=");
+    }
+
+    @Test
+    void testBuilderMethods() {
+        Session.SessionBuilder builder = Session.builder();
+        builder.id(1L);
+        builder.name("name");
+        builder.date(new Date());
+        builder.description("desc");
+        Session session = builder.build();
+        assertThat(session).isNotNull();
+    }
+
+
 }

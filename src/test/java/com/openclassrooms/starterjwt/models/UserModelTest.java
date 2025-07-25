@@ -40,14 +40,11 @@ class UserModelTest {
         User user3 = new User();
         user3.setId(2L);
 
-        // users com mesmo id devem ser iguais
         assertThat(user1).isEqualTo(user2);
         assertThat(user1.hashCode()).isEqualTo(user2.hashCode());
 
-        // usuários com ids diferentes são diferentes
         assertThat(user1).isNotEqualTo(user3);
 
-        // equals null e tipo diferente
         assertThat(user1).isNotEqualTo(null);
         assertThat(user1).isNotEqualTo("uma string");
     }
@@ -102,5 +99,22 @@ class UserModelTest {
         assertThat(user.getPassword()).isEqualTo("pass123");
         assertThat(user.isAdmin()).isTrue();
     }
+
+    @Test
+    void testAllArgsConstructor() {
+        LocalDateTime createdAt = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime updatedAt = LocalDateTime.of(2024, 1, 2, 10, 0);
+        User user = new User(99L, "mail@mail.com", "Last", "First", "123", true, createdAt, updatedAt);
+
+        assertThat(user.getId()).isEqualTo(99L);
+        assertThat(user.getEmail()).isEqualTo("mail@mail.com");
+        assertThat(user.getLastName()).isEqualTo("Last");
+        assertThat(user.getFirstName()).isEqualTo("First");
+        assertThat(user.getPassword()).isEqualTo("123");
+        assertThat(user.isAdmin()).isTrue();
+        assertThat(user.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(user.getUpdatedAt()).isEqualTo(updatedAt);
+    }
+
 
 }

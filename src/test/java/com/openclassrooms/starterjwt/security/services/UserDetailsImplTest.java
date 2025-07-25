@@ -120,32 +120,6 @@ class UserDetailsImplTest {
         assertTrue(user.isEnabled());
     }
 
-//    @Test
-//    void testEqualsAndHashCode() {
-//        UserDetailsImpl user1 = UserDetailsImpl.builder()
-//                .id(1L)
-//                .username("user1")
-//                .build();
-//
-//        UserDetailsImpl user2 = UserDetailsImpl.builder()
-//                .id(1L)
-//                .username("user2")
-//                .build();
-//
-//        UserDetailsImpl user3 = UserDetailsImpl.builder()
-//                .id(2L)
-//                .username("user3")
-//                .build();
-//
-//        assertEquals(user1, user2);
-//        assertEquals(user1.hashCode(), user2.hashCode());
-//
-//        assertNotEquals(user1, user3);
-//
-//        assertNotEquals(user1, null);
-//        assertNotEquals(user1, new Object());
-//    }
-
     @Test
     void testBuilderWithNullAdmin() {
         UserDetailsImpl user = UserDetailsImpl.builder()
@@ -156,6 +130,39 @@ class UserDetailsImplTest {
 
         assertNull(user.getAdmin());
     }
+
+    @Test
+    void testEquals() {
+        UserDetailsImpl user1 = UserDetailsImpl.builder()
+                .id(1L)
+                .username("user1")
+                .build();
+
+        UserDetailsImpl user2 = UserDetailsImpl.builder()
+                .id(1L)
+                .username("user2") // username diferente, mas id igual
+                .build();
+
+        UserDetailsImpl user3 = UserDetailsImpl.builder()
+                .id(2L)
+                .username("user3")
+                .build();
+
+        assertEquals(user1, user1);
+
+        assertEquals(user1, user2);
+        assertEquals(user2, user1);
+
+        assertEquals(user1.hashCode(), user2.hashCode());
+
+        assertNotEquals(user1, user3);
+        assertNotEquals(user3, user1);
+
+        assertNotEquals(user1, null);
+
+        assertNotEquals(user1, new Object());
+    }
+
 
     private void setPrivateField(Object target, String fieldName, Object value) throws Exception {
         Field field = target.getClass().getDeclaredField(fieldName);

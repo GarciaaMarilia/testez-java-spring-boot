@@ -1,12 +1,26 @@
 package com.openclassrooms.starterjwt.models;
 
+import com.openclassrooms.starterjwt.dto.TeacherDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.validation.Validator;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 
 class TeacherModelTest {
+    private Validator validator;
+
+    @BeforeEach
+    void setUp() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
 
     @Test
     void testNoArgsConstructorAndSettersAndGetters() {
@@ -99,5 +113,30 @@ class TeacherModelTest {
         assertThat(toString).contains("id=100");
         assertThat(toString).contains("firstName=Ada");
         assertThat(toString).contains("lastName=Lovelace");
+    }
+
+    @Test
+    void whenFirstNameIsBlank_thenValidationFails() {
+        TeacherDto dto = new TeacherDto(1L, "Doe", " ", null, null);
+        Set<ConstraintViolation<TeacherDto>> violations = validator.validate(dto);
+
+        assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("firstName"));
+    }
+
+    @Test
+    void whenLastNameIsTooLong_thenValidationFails() {
+        String tooLong = new String(new char[25]).replace('\0', 'a');
+        TeacherDto dto = new TeacherDto(1L, tooLong, "John", null, null);
+        Set<ConstraintViolation<TeacherDto>> violations = validator.validate(dto);
+
+        assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("lastName"));
+    }
+
+    @Test
+    void whenAllFieldsAreValid_thenValidationSucceeds() {
+        TeacherDto dto = new TeacherDto(1L, "Doe", "John", null, null);
+        Set<ConstraintViolation<TeacherDto>> violations = validator.validate(dto);
+
+        assertThat(violations).isEmpty();
     }
 }
