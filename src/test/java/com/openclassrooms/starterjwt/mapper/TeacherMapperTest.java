@@ -1,6 +1,7 @@
 package com.openclassrooms.starterjwt.mapper;
 
 import com.openclassrooms.starterjwt.dto.TeacherDto;
+import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,5 +92,18 @@ class TeacherMapperTest {
         assertThat(teachers.get(0).getId()).isEqualTo(dto.getId());
         assertThat(teachers.get(0).getFirstName()).isEqualTo(dto.getFirstName());
         assertThat(teachers.get(0).getLastName()).isEqualTo(dto.getLastName());
+    }
+
+
+    @Test
+    void shouldCallToStringOnBuilder() {
+        Teacher.TeacherBuilder builder = Teacher.builder()
+                .id(1L)
+                .firstName("Marie")
+                .lastName("Curie");
+
+        String str = builder.toString();
+
+        assertThat(str).isNotNull();
     }
 }

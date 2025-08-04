@@ -6,14 +6,15 @@ import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 
 class TeacherModelTest {
+
     private Validator validator;
 
     @BeforeEach
@@ -25,9 +26,9 @@ class TeacherModelTest {
     @Test
     void testNoArgsConstructorAndSettersAndGetters() {
         Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        teacher.setFirstName("John");
-        teacher.setLastName("Doe");
+        teacher.setId(1L)
+                .setFirstName("John")
+                .setLastName("Doe");
         LocalDateTime now = LocalDateTime.now();
         teacher.setCreatedAt(now);
         teacher.setUpdatedAt(now);

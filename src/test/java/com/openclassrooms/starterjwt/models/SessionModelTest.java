@@ -18,11 +18,29 @@ class SessionModelTest {
         Date now = new Date();
         session.setDate(now);
         session.setDescription("A description");
-        Teacher teacher = new Teacher().setId(10L).setFirstName("John").setLastName("Doe");
+
+        Teacher teacher = new Teacher()
+                .setId(10L)
+                .setFirstName("John")
+                .setLastName("Doe");
         session.setTeacher(teacher);
-        User user1 = new User().setId(100L).setEmail("user1@example.com").setFirstName("User").setLastName("One").setPassword("pwd").setAdmin(false);
-        User user2 = new User().setId(101L).setEmail("user2@example.com").setFirstName("User").setLastName("Two").setPassword("pwd").setAdmin(false);
+
+        User user1 = new User()
+                .setId(100L)
+                .setEmail("user1@example.com")
+                .setFirstName("User")
+                .setLastName("One")
+                .setPassword("pwd")
+                .setAdmin(false);
+        User user2 = new User()
+                .setId(101L)
+                .setEmail("user2@example.com")
+                .setFirstName("User")
+                .setLastName("Two")
+                .setPassword("pwd")
+                .setAdmin(false);
         session.setUsers(Arrays.asList(user1, user2));
+
         LocalDateTime created = LocalDateTime.now().minusDays(1);
         LocalDateTime updated = LocalDateTime.now();
         session.setCreatedAt(created);
@@ -46,7 +64,16 @@ class SessionModelTest {
         LocalDateTime created = LocalDateTime.now().minusDays(2);
         LocalDateTime updated = LocalDateTime.now().minusDays(1);
 
-        Session session = new Session(1L, "Name", date, "Description", teacher, Arrays.asList(user), created, updated);
+        Session session = new Session(
+                1L,
+                "Name",
+                date,
+                "Description",
+                teacher,
+                Arrays.asList(user),
+                created,
+                updated
+        );
 
         assertThat(session.getId()).isEqualTo(1L);
         assertThat(session.getName()).isEqualTo("Name");
@@ -61,8 +88,17 @@ class SessionModelTest {
     @Test
     void testBuilder() {
         Date date = new Date();
-        Teacher teacher = new Teacher().setId(3L).setFirstName("Marie").setLastName("Curie");
-        User user = new User().setId(20L).setEmail("test@example.com").setFirstName("Test").setLastName("User").setPassword("pwd").setAdmin(true);
+        Teacher teacher = new Teacher()
+                .setId(3L)
+                .setFirstName("Marie")
+                .setLastName("Curie");
+        User user = new User()
+                .setId(20L)
+                .setEmail("test@example.com")
+                .setFirstName("Test")
+                .setLastName("User")
+                .setPassword("pwd")
+                .setAdmin(true);
 
         Session session = Session.builder()
                 .id(2L)
@@ -132,8 +168,17 @@ class SessionModelTest {
     @Test
     void testToStringAllFieldsCovered() {
         Date date = new Date();
-        Teacher teacher = new Teacher().setId(1L).setFirstName("Ada").setLastName("Lovelace");
-        User user = new User().setId(2L).setEmail("ada@example.com").setFirstName("Ada").setLastName("Lovelace").setPassword("pwd").setAdmin(true);
+        Teacher teacher = new Teacher()
+                .setId(1L)
+                .setFirstName("Ada")
+                .setLastName("Lovelace");
+        User user = new User()
+                .setId(2L)
+                .setEmail("ada@example.com")
+                .setFirstName("Ada")
+                .setLastName("Lovelace")
+                .setPassword("pwd")
+                .setAdmin(true);
         LocalDateTime created = LocalDateTime.now().minusDays(1);
         LocalDateTime updated = LocalDateTime.now();
 
@@ -166,9 +211,8 @@ class SessionModelTest {
         builder.name("name");
         builder.date(new Date());
         builder.description("desc");
+
         Session session = builder.build();
         assertThat(session).isNotNull();
     }
-
-
 }

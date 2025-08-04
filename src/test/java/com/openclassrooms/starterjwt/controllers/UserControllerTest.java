@@ -7,7 +7,6 @@ import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,6 +54,9 @@ public class UserControllerTest {
         userDto = new UserDto();
         userDto.setEmail("john.doe@example.com");
         userDto.setFirstName("John");
+        userDto.setLastName("Doe");
+        userDto.setId(1L);
+        userDto.setAdmin(false);
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User
                 .withUsername("john.doe@example.com")
@@ -68,14 +74,78 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnUserByIdSuccessfully() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+
+        user.setLastName("Doe");
+        user.setPassword("password");
+        user.setCreatedAt(now);
+        user.setUpdatedAt(now);
+        user.setAdmin(false);
+
+        userDto = new UserDto(
+                1L,
+                "john.doe@example.com",
+                "Doe",
+                "John",
+                false,
+                "password",
+                now,
+                now
+        );
+
         when(userService.findById(1L)).thenReturn(user);
         when(userMapper.toDto(user)).thenReturn(userDto);
 
         mockMvc.perform(get("/api/user/1"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.email").value("john.doe@example.com"))
-                .andExpect(jsonPath("$.firstName").value("John"));
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.admin").value(false))
+                .andExpect(jsonPath("$.createdAt").exists())
+                .andExpect(jsonPath("$.updatedAt").exists());
     }
+
+    @Test
+    void testUserDtoEqualityAndToString() {
+        LocalDateTime now = LocalDateTime.now();
+
+        UserDto user1 = new UserDto(
+                1L,
+                "john.doe@example.com",
+                "John",
+                "Doe",
+                false,
+                null,
+                now,
+                now
+        );
+
+        UserDto user2 = new UserDto(
+                1L,
+                "john.doe@example.com",
+                "John",
+                "Doe",
+                false,
+                null,
+                now,
+                now
+        );
+
+        // ✅ Testa equals()
+        assertEquals(user1, user2);
+
+        // ✅ Testa hashCode()
+        assertEquals(user1.hashCode(), user2.hashCode());
+
+        // ✅ Testa toString()
+        String toString = user1.toString();
+        assertTrue(toString.contains("john.doe@example.com"));
+        assertTrue(toString.contains("John"));
+        assertTrue(toString.contains("Doe"));
+    }
+
 
     @Test
     void shouldReturnNotFoundWhenUserDoesNotExist() throws Exception {

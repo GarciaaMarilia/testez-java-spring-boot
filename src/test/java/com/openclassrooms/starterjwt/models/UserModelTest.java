@@ -2,7 +2,12 @@ package com.openclassrooms.starterjwt.models;
 
 import org.junit.jupiter.api.Test;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -29,6 +34,40 @@ class UserModelTest {
         assertThat(user.isAdmin()).isTrue();
         assertThat(user.getCreatedAt()).isEqualTo(LocalDateTime.of(2024, 7, 24, 12, 0));
         assertThat(user.getUpdatedAt()).isEqualTo(LocalDateTime.of(2024, 7, 25, 12, 0));
+    }
+
+    @Test
+    void testUserBuilderIndividualSetters() {
+        User.UserBuilder builder = User.builder();
+
+        builder
+                .email("builder@example.com")
+                .firstName("BuilderFirst")
+                .lastName("BuilderLast")
+                .password("builderPass");
+
+        User user = builder.build();
+
+        assertThat(user.getEmail()).isEqualTo("builder@example.com");
+        assertThat(user.getFirstName()).isEqualTo("BuilderFirst");
+        assertThat(user.getLastName()).isEqualTo("BuilderLast");
+        assertThat(user.getPassword()).isEqualTo("builderPass");
+    }
+
+    @Test
+    void testUserBuilderToString() {
+        User.UserBuilder builder = User.builder()
+                .email("builder@example.com")
+                .firstName("First")
+                .lastName("Last")
+                .password("secret")
+                .admin(false);
+
+        String builderToString = builder.toString();
+
+        assertThat(builderToString).contains("builder@example.com");
+        assertThat(builderToString).contains("First");
+        assertThat(builderToString).contains("Last");
     }
 
     @Test
@@ -116,5 +155,15 @@ class UserModelTest {
         assertThat(user.getUpdatedAt()).isEqualTo(updatedAt);
     }
 
+    @Test
+    void testCreatedAtAndUpdatedAtManuallySet() {
+        LocalDateTime now = LocalDateTime.now();
+        User user = new User();
+        user.setCreatedAt(now);
+        user.setUpdatedAt(now);
+
+        assertThat(user.getCreatedAt()).isEqualTo(now);
+        assertThat(user.getUpdatedAt()).isEqualTo(now);
+    }
 
 }
